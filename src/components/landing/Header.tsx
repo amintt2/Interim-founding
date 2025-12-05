@@ -48,6 +48,15 @@ export function Header() {
                         >
                             Tarifs
                         </Link>
+                        <Link
+                            href="/contact"
+                            className={cn(
+                                "transition-colors hover:text-primary",
+                                isActive("/contact") ? "text-primary" : "text-muted-foreground"
+                            )}
+                        >
+                            Contact
+                        </Link>
                     </nav>
                 </div>
                 <div className="flex items-center gap-4">

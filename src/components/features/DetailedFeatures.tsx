@@ -1,314 +1,418 @@
 "use client"
 
-import { FileText, Clock, Bot, Users, Briefcase, Calculator, Database, Calendar, Zap, Shield, Lock } from "lucide-react"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { FileText, Clock, Bot, Users, Briefcase, Calculator, Database, Calendar, Zap, Shield, Lock, ArrowRight, Check, Sparkles } from "lucide-react"
+import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
-import CircularText from "@/components/ui/shadcn-io/circular-text"
-import { ColourfulText } from "@/components/ui/shadcn-io/colourful-text"
-import DecryptedText from "@/components/ui/shadcn-io/decrypted-text"
-import { FlipWords } from "@/components/ui/shadcn-io/flip-words"
-import { RollingText } from "@/components/ui/shadcn-io/rolling-text"
-import ScrollVelocity from "@/components/ui/shadcn-io/scroll-velocity"
-import { ShimmeringText } from "@/components/ui/shadcn-io/shimmering-text"
 import { useRef } from "react"
 
-const features = [
+// Feature modules data
+const modules = [
     {
+        id: "candidates",
         title: "Module Candidats",
         subtitle: "ATS Intelligent",
-        description: "Système complet de gestion des candidats et intérimaires avec parsing automatique et intelligence artificielle",
+        description: "Centralisez et gérez efficacement votre vivier de talents avec notre système de suivi des candidatures propulsé par l'IA.",
         icon: Users,
-        gradient: "from-blue-500 via-cyan-500 to-blue-500",
-        flipWords: ["intelligent", "automatisé", "moderne", "puissant"],
-        keywords: [
-            { text: "Parsing automatique des CVs avec IA", highlight: "automatique", secure: false },
-            { text: "Base de données candidats centralisée", highlight: "Base de données", secure: false, icon: Database },
-            { text: "Calendrier de disponibilités en temps réel", highlight: "Calendrier", secure: false, icon: Calendar },
-            { text: "Recherche avancée multi-critères", highlight: "Recherche", secure: false },
-            { text: "Historique complet et évaluations", highlight: "Historique", secure: false }
-        ]
+        color: "blue",
+        features: [
+            "Parsing automatique des CVs",
+            "Base de données centralisée",
+            "Calendrier de disponibilités",
+            "Recherche multi-critères",
+            "Historique & évaluations"
+        ],
+        stats: { value: "80%", label: "Temps gagné sur le sourcing" }
     },
     {
+        id: "crm",
         title: "CRM Client",
         subtitle: "Gestion Commerciale",
-        description: "Pilotage commercial et gestion des missions avec suivi en temps réel",
+        description: "Pilotez votre relation client et vos missions avec une vue 360° sur votre activité commerciale.",
         icon: Briefcase,
-        gradient: "from-indigo-500 via-purple-500 to-indigo-500",
-        flipWords: ["efficace", "centralisé", "intuitif", "complet"],
-        keywords: [
-            { text: "Base de données clients sécurisée", highlight: "Base de données", secure: false, icon: Database },
-            { text: "Gestion des commandes de mission", highlight: "Gestion", secure: false },
-            { text: "Calcul automatique des marges", highlight: "automatique", secure: false, icon: Calculator },
-            { text: "Suivi en temps réel des coefficients", highlight: "temps réel", secure: false },
-            { text: "Tableau de bord commercial dynamique", highlight: "Tableau de bord", secure: false }
-        ]
+        color: "indigo",
+        features: [
+            "Fiches clients complètes",
+            "Gestion des commandes",
+            "Calcul automatique des marges",
+            "Suivi des coefficients",
+            "Dashboard commercial"
+        ],
+        stats: { value: "2x", label: "Productivité commerciale" }
     },
     {
+        id: "admin",
         title: "Admin & Légal",
-        subtitle: "Automatisation Sécurisée",
-        description: "Génération automatique des contrats et déclarations avec signature électronique certifiée",
+        subtitle: "Conformité Automatisée",
+        description: "Automatisez la génération de contrats et les déclarations légales en toute conformité.",
         icon: FileText,
-        gradient: "from-emerald-500 via-teal-500 to-emerald-500",
-        flipWords: ["sécurisé", "automatisé", "certifié", "conforme"],
-        keywords: [
-            { text: "Génération automatique des contrats CMD/CM", highlight: "automatique", secure: false },
-            { text: "Signature électronique eIDAS certifiée", highlight: "Signature électronique", secure: true, icon: Shield },
-            { text: "DPAE automatisée vers URSSAF", highlight: "DPAE", secure: true },
-            { text: "Alertes de sécurité automatiques", highlight: "sécurité", secure: true, icon: Shield },
-            { text: "Archivage sécurisé des documents", highlight: "sécurisé", secure: true, icon: Lock }
-        ]
+        color: "emerald",
+        features: [
+            "Contrats CMD/CM automatiques",
+            "Signature électronique eIDAS",
+            "DPAE vers URSSAF",
+            "Alertes de conformité",
+            "Archivage sécurisé"
+        ],
+        stats: { value: "0", label: "Erreur administrative" },
+        secure: true
     },
     {
-        title: "Gestion Temps",
+        id: "time",
+        title: "Gestion du Temps",
         subtitle: "Workflow Optimisé",
-        description: "Suivi précis des heures avec validation workflow et export automatique",
+        description: "Suivez précisément les heures travaillées avec validation automatique et export vers la paie.",
         icon: Clock,
-        gradient: "from-orange-500 via-amber-500 to-orange-500",
-        flipWords: ["précis", "rapide", "fiable", "automatique"],
-        keywords: [
-            { text: "Calendrier de saisie intelligent", highlight: "Calendrier", secure: false, icon: Calendar },
-            { text: "Gestion heures normales et supplémentaires", highlight: "Gestion", secure: false },
-            { text: "Workflow de validation automatique", highlight: "automatique", secure: false, icon: Zap },
-            { text: "Gestion des absences et arrêts", highlight: "absences", secure: false },
-            { text: "Export automatisé vers logiciels de paie", highlight: "Export", secure: false }
-        ]
+        color: "amber",
+        features: [
+            "Saisie des heures intuitive",
+            "Heures supplémentaires",
+            "Workflow de validation",
+            "Gestion des absences",
+            "Export automatisé"
+        ],
+        stats: { value: "95%", label: "Taux de validation auto" }
     },
     {
+        id: "payroll",
         title: "Paie & Facturation",
-        subtitle: "Automatisation Financière",
-        description: "Pré-paie et facturation automatisée avec calculs intelligents et sécurisés",
+        subtitle: "Finance Automatisée",
+        description: "De la pré-paie à la facturation client, automatisez l'ensemble de votre chaîne financière.",
         icon: Calculator,
-        gradient: "from-pink-500 via-rose-500 to-pink-500",
-        flipWords: ["automatique", "précis", "sécurisé", "intelligent"],
-        keywords: [
-            { text: "Calcul automatique IFM et CP", highlight: "automatique", secure: false, icon: Calculator },
-            { text: "Export sécurisé des variables de paie", highlight: "sécurisé", secure: true },
-            { text: "Gestion sécurisée des acomptes", highlight: "sécurisée", secure: true },
-            { text: "Facturation client automatique", highlight: "automatique", secure: false, icon: Zap },
-            { text: "Suivi des paiements en temps réel", highlight: "temps réel", secure: false }
-        ]
+        color: "rose",
+        features: [
+            "Calcul IFM et CP",
+            "Variables de paie",
+            "Gestion des acomptes",
+            "Facturation automatique",
+            "Suivi des paiements"
+        ],
+        stats: { value: "100%", label: "Précision des calculs" },
+        secure: true
     },
     {
+        id: "ai",
         title: "IA & Innovation",
         subtitle: "Intelligence Artificielle",
-        description: "Intelligence artificielle au service de l'intérim avec matching prédictif et automatisation avancée",
+        description: "Exploitez la puissance de l'IA pour le matching, la rédaction et l'analyse prédictive.",
         icon: Bot,
-        gradient: "from-violet-600 via-fuchsia-600 to-violet-600",
-        flipWords: ["intelligent", "prédictif", "innovant", "révolutionnaire"],
-        keywords: [
-            { text: "Matching prédictif par IA avancée", highlight: "IA", secure: false, icon: Bot },
-            { text: "Rédaction automatique d'annonces", highlight: "automatique", secure: false },
-            { text: "Parsing intelligent de documents", highlight: "intelligent", secure: false },
-            { text: "Chatbot candidats WhatsApp/SMS", highlight: "Chatbot", secure: false, icon: Bot },
-            { text: "Analyse prédictive des besoins", highlight: "prédictive", secure: false }
-        ]
+        color: "violet",
+        features: [
+            "Matching prédictif",
+            "Rédaction d'annonces IA",
+            "Parsing intelligent",
+            "Chatbot WhatsApp/SMS",
+            "Analyse prédictive"
+        ],
+        stats: { value: "3x", label: "Taux de placement" }
     }
 ]
 
+const colorVariants: Record<string, { gradient: string; border: string; bg: string; text: string; iconBg: string }> = {
+    blue: {
+        gradient: "from-blue-500/20 via-cyan-500/10 to-transparent",
+        border: "border-blue-500/20 hover:border-blue-400/40",
+        bg: "bg-blue-500/10",
+        text: "text-blue-400",
+        iconBg: "from-blue-500/20 to-cyan-500/20"
+    },
+    indigo: {
+        gradient: "from-indigo-500/20 via-purple-500/10 to-transparent",
+        border: "border-indigo-500/20 hover:border-indigo-400/40",
+        bg: "bg-indigo-500/10",
+        text: "text-indigo-400",
+        iconBg: "from-indigo-500/20 to-purple-500/20"
+    },
+    emerald: {
+        gradient: "from-emerald-500/20 via-teal-500/10 to-transparent",
+        border: "border-emerald-500/20 hover:border-emerald-400/40",
+        bg: "bg-emerald-500/10",
+        text: "text-emerald-400",
+        iconBg: "from-emerald-500/20 to-teal-500/20"
+    },
+    amber: {
+        gradient: "from-amber-500/20 via-orange-500/10 to-transparent",
+        border: "border-amber-500/20 hover:border-amber-400/40",
+        bg: "bg-amber-500/10",
+        text: "text-amber-400",
+        iconBg: "from-amber-500/20 to-orange-500/20"
+    },
+    rose: {
+        gradient: "from-rose-500/20 via-pink-500/10 to-transparent",
+        border: "border-rose-500/20 hover:border-rose-400/40",
+        bg: "bg-rose-500/10",
+        text: "text-rose-400",
+        iconBg: "from-rose-500/20 to-pink-500/20"
+    },
+    violet: {
+        gradient: "from-violet-500/20 via-fuchsia-500/10 to-transparent",
+        border: "border-violet-500/20 hover:border-violet-400/40",
+        bg: "bg-violet-500/10",
+        text: "text-violet-400",
+        iconBg: "from-violet-500/20 to-fuchsia-500/20"
+    }
+}
+
 export function DetailedFeatures() {
     return (
-        <>
-            <section className="relative py-24 space-y-16 overflow-hidden">
-                {/* Hero Section with Circular Text */}
+        <div className="relative">
+            {/* Hero Section */}
+            <section className="relative py-20 md:py-32">
                 <div className="container">
-                    <div className="text-center space-y-12">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.8 }}
-                            className="flex flex-col items-center gap-8"
-                        >
-                            <CircularText
-                                text="INNOVATION • AUTOMATISATION • INTELLIGENCE • "
-                                onHover="speedUp"
-                                spinDuration={20}
-                                className="text-blue-400 tracking-widest text-sm"
-                            />
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        className="max-w-4xl mx-auto text-center space-y-8"
+                    >
+                        {/* Badge */}
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10">
+                            <Sparkles className="w-4 h-4 text-blue-400" />
+                            <span className="text-sm text-white/70">6 modules intégrés</span>
+                        </div>
 
-                            <div className="space-y-4">
-                                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-white">
-                                    Découvrez nos{" "}
-                                    <ColourfulText
-                                        text="Fonctionnalités"
-                                        className="inline"
-                                    />
-                                </h1>
-                                <p className="mx-auto max-w-[900px] text-muted-foreground md:text-xl">
-                                    Une plateforme tout-en-un qui révolutionne la gestion d'agence d'intérim
-                                </p>
+                        {/* Title */}
+                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
+                            <span className="text-white">Une suite complète pour </span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500">
+                                votre agence
+                            </span>
+                        </h1>
+
+                        {/* Description */}
+                        <p className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto leading-relaxed">
+                            De la gestion des candidats à la facturation, chaque module est conçu pour s'intégrer parfaitement à votre workflow quotidien.
+                        </p>
+
+                        {/* Quick Stats */}
+                        <div className="flex flex-wrap items-center justify-center gap-8 pt-8">
+                            <div className="text-center">
+                                <div className="text-3xl font-bold text-white">6</div>
+                                <div className="text-sm text-white/40">Modules</div>
                             </div>
-                        </motion.div>
+                            <div className="w-px h-10 bg-white/10" />
+                            <div className="text-center">
+                                <div className="text-3xl font-bold text-white">100%</div>
+                                <div className="text-sm text-white/40">Open Source</div>
+                            </div>
+                            <div className="w-px h-10 bg-white/10" />
+                            <div className="text-center">
+                                <div className="text-3xl font-bold text-white">RGPD</div>
+                                <div className="text-sm text-white/40">Compliant</div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+
+                {/* Gradient Orb */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
+            </section>
+
+            {/* Modules Grid - Bento Style */}
+            <section className="relative py-16 md:py-24">
+                <div className="container">
+                    {/* First Row - 2 large cards */}
+                    <div className="grid md:grid-cols-2 gap-6 mb-6">
+                        {modules.slice(0, 2).map((module, index) => (
+                            <ModuleCard key={module.id} module={module} index={index} size="large" />
+                        ))}
+                    </div>
+
+                    {/* Second Row - 3 medium cards */}
+                    <div className="grid md:grid-cols-3 gap-6 mb-6">
+                        {modules.slice(2, 5).map((module, index) => (
+                            <ModuleCard key={module.id} module={module} index={index + 2} size="medium" />
+                        ))}
+                    </div>
+
+                    {/* Third Row - 1 wide card (AI) */}
+                    <div className="grid md:grid-cols-1 gap-6">
+                        <ModuleCard module={modules[5]} index={5} size="wide" />
                     </div>
                 </div>
             </section>
 
-            {/* Scroll Velocity Divider - Reduced size */}
-            <ScrollVelocity
-                texts={['ATS • CRM • ADMIN • TEMPS • PAIE • IA', 'ATS • CRM • ADMIN • TEMPS • PAIE • IA']}
-                velocity={100}
-                className="text-white/20 text-5xl md:text-6xl font-bold"
-            />
+            {/* Integration Section */}
+            <section className="relative py-16 md:py-24 border-t border-white/5">
+                <div className="container">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="max-w-4xl mx-auto text-center space-y-8"
+                    >
+                        <h2 className="text-3xl md:text-4xl font-bold text-white">
+                            Tous les modules fonctionnent ensemble
+                        </h2>
+                        <p className="text-white/50 text-lg max-w-2xl mx-auto">
+                            Une donnée saisie une seule fois circule automatiquement dans tous les modules.
+                            Du candidat à la facture, en passant par le contrat et les heures.
+                        </p>
 
-            <section className="relative py-24 space-y-48 overflow-hidden">
-                {/* Feature Sections - Centered */}
-                <div className="space-y-48">
-                    {features.map((feature, index) => (
-                        <FeatureSection key={index} feature={feature} index={index} />
-                    ))}
+                        {/* Integration Flow Visual */}
+                        <div className="relative py-12">
+                            <div className="flex flex-wrap items-center justify-center gap-4">
+                                {modules.map((module, index) => {
+                                    const colors = colorVariants[module.color]
+                                    return (
+                                        <motion.div
+                                            key={module.id}
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            whileInView={{ opacity: 1, scale: 1 }}
+                                            viewport={{ once: true }}
+                                            transition={{ delay: index * 0.1 }}
+                                            className={cn(
+                                                "flex items-center gap-2 px-4 py-2 rounded-full border",
+                                                colors.border,
+                                                colors.bg
+                                            )}
+                                        >
+                                            <module.icon className={cn("w-4 h-4", colors.text)} />
+                                            <span className="text-sm text-white/80">{module.title}</span>
+                                        </motion.div>
+                                    )
+                                })}
+                            </div>
+
+                            {/* Connection Lines - Decorative */}
+                            <div className="absolute inset-0 pointer-events-none">
+                                <svg className="w-full h-full" viewBox="0 0 800 100" preserveAspectRatio="none">
+                                    <defs>
+                                        <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stopColor="rgba(59, 130, 246, 0)" />
+                                            <stop offset="50%" stopColor="rgba(59, 130, 246, 0.3)" />
+                                            <stop offset="100%" stopColor="rgba(59, 130, 246, 0)" />
+                                        </linearGradient>
+                                    </defs>
+                                    <path
+                                        d="M0,50 Q200,30 400,50 T800,50"
+                                        stroke="url(#lineGradient)"
+                                        strokeWidth="1"
+                                        fill="none"
+                                    />
+                                </svg>
+                            </div>
+                        </div>
+
+                        {/* CTA */}
+                        <motion.a
+                            href="/roadmap"
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            viewport={{ once: true }}
+                            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-medium transition-all duration-200 group"
+                        >
+                            Voir la roadmap
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </motion.a>
+                    </motion.div>
                 </div>
             </section>
-
-            {/* Bottom Scroll Velocity - Reduced size */}
-            <ScrollVelocity
-                texts={['INNOVATION • AUTOMATISATION • INTELLIGENCE', 'INNOVATION • AUTOMATISATION • INTELLIGENCE']}
-                velocity={80}
-                className="text-white/20 text-5xl md:text-6xl font-bold"
-            />
-
-            <section className="relative py-24 overflow-hidden">
-                {/* Bottom CTA */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    className="container text-center space-y-6"
-                >
-                    <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
-                        <Zap className="w-5 h-5 text-blue-400" />
-                        <ShimmeringText
-                            className="text-blue-400 font-medium text-base"
-                            text="Besoin de fonctionnalités spécifiques ? Nous développons vos modules sur-mesure en 3 mois."
-                            wave
-                        />
-                    </div>
-                </motion.div>
-            </section>
-        </>
+        </div>
     )
 }
 
-function FeatureSection({ feature, index }: { feature: typeof features[0]; index: number }) {
-    const sectionRef = useRef<HTMLDivElement>(null)
-    const { scrollYProgress } = useScroll({
-        target: sectionRef,
-        offset: ["start end", "end start"]
-    })
-
-    const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0])
-    const y = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [100, 0, 0, -100])
+function ModuleCard({
+    module,
+    index,
+    size
+}: {
+    module: typeof modules[0]
+    index: number
+    size: "large" | "medium" | "wide"
+}) {
+    const colors = colorVariants[module.color]
 
     return (
         <motion.div
-            ref={sectionRef}
-            style={{ opacity, y }}
-            className="container relative"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+            className={cn(
+                "group relative rounded-2xl border bg-white/[0.02] backdrop-blur-sm transition-all duration-500",
+                colors.border,
+                size === "large" && "p-8 md:p-10",
+                size === "medium" && "p-6 md:p-8",
+                size === "wide" && "p-8 md:p-10"
+            )}
         >
-            {/* Gradient background under text */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className={cn(
-                    "w-full max-w-4xl h-96 rounded-full blur-3xl opacity-10",
-                    `bg-gradient-to-br ${feature.gradient}`
-                )} />
-            </div>
+            {/* Gradient Background on Hover */}
+            <div className={cn(
+                "absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none",
+                `bg-gradient-to-br ${colors.gradient}`
+            )} />
 
-            {/* Centered Content */}
-            <div className="relative z-10 max-w-4xl mx-auto text-center space-y-12">
-                <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    viewport={{ once: true }}
-                    className="space-y-6"
-                >
-                    <div className="flex flex-col items-center gap-4">
+            {/* Content */}
+            <div className={cn(
+                "relative z-10",
+                size === "wide" && "md:flex md:items-start md:gap-12"
+            )}>
+                {/* Left Part */}
+                <div className={cn(
+                    "space-y-4",
+                    size === "wide" && "md:flex-1"
+                )}>
+                    {/* Icon & Title */}
+                    <div className="flex items-start gap-4">
                         <div className={cn(
-                            "h-20 w-20 rounded-2xl flex items-center justify-center",
-                            "bg-gradient-to-br from-white/10 to-white/5 border border-white/10 backdrop-blur-sm"
+                            "w-12 h-12 rounded-xl flex items-center justify-center border border-white/10",
+                            `bg-gradient-to-br ${colors.iconBg}`
                         )}>
-                            <feature.icon className="h-10 w-10 text-blue-400" />
+                            <module.icon className={cn("w-6 h-6", colors.text)} />
                         </div>
                         <div>
-                            <p className="text-sm text-blue-400 font-medium uppercase tracking-wider">{feature.subtitle}</p>
-                            <RollingText className="text-4xl md:text-5xl font-bold text-white" text={feature.title} />
+                            <p className={cn("text-sm font-medium", colors.text)}>{module.subtitle}</p>
+                            <h3 className="text-xl md:text-2xl font-bold text-white">{module.title}</h3>
                         </div>
                     </div>
 
-                    <div className="text-2xl md:text-3xl text-muted-foreground font-light">
-                        <FlipWords
-                            words={feature.flipWords}
-                            duration={2500}
-                            className="text-blue-400 font-semibold"
-                        />{" "}
-                        <span className="text-white">pour votre agence</span>
-                    </div>
-
-                    <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">
-                        {feature.description}
+                    {/* Description */}
+                    <p className="text-white/50 leading-relaxed">
+                        {module.description}
                     </p>
-                </motion.div>
 
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    viewport={{ once: true }}
-                    className="space-y-5"
-                >
-                    {feature.keywords.map((keyword, idx) => (
-                        <motion.div
+                    {/* Stats */}
+                    <div className={cn(
+                        "inline-flex items-center gap-3 px-4 py-2 rounded-lg border border-white/5 bg-white/[0.02]",
+                        size === "wide" && "mt-4"
+                    )}>
+                        <span className={cn("text-2xl font-bold", colors.text)}>{module.stats.value}</span>
+                        <span className="text-sm text-white/40">{module.stats.label}</span>
+                    </div>
+                </div>
+
+                {/* Features List */}
+                <div className={cn(
+                    "mt-6 space-y-2",
+                    size === "wide" && "md:mt-0 md:w-80"
+                )}>
+                    {module.features.map((feature, idx) => (
+                        <div
                             key={idx}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4 + idx * 0.1 }}
-                            viewport={{ once: true }}
-                            className="group relative"
+                            className="flex items-center gap-3 text-sm text-white/60 group-hover:text-white/80 transition-colors"
                         >
-                            <div className="flex items-start gap-4 p-4 rounded-xl bg-gradient-to-br from-white/5 to-white/0 border border-white/10 backdrop-blur-sm hover:from-white/10 hover:border-blue-500/30 transition-all duration-300 max-w-2xl mx-auto">
-                                {keyword.icon && (
-                                    <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                                        <keyword.icon className="h-6 w-6 text-blue-400" />
-                                    </div>
-                                )}
-                                <div className="flex-1 pt-1 text-left">
-                                    {keyword.secure ? (
-                                        <div className="text-slate-300 text-lg leading-relaxed">
-                                            {keyword.text.split(keyword.highlight).map((part, i, arr) => (
-                                                <span key={i}>
-                                                    {part}
-                                                    {i < arr.length - 1 && (
-                                                        <DecryptedText
-                                                            text={keyword.highlight}
-                                                            speed={50}
-                                                            maxIterations={10}
-                                                            sequential={true}
-                                                            className="font-semibold text-emerald-400 inline"
-                                                            encryptedClassName="font-semibold text-muted-foreground inline"
-                                                            animateOn="hover"
-                                                        />
-                                                    )}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <p className="text-slate-300 text-lg leading-relaxed">
-                                            {keyword.text.split(keyword.highlight).map((part, i, arr) => (
-                                                <span key={i}>
-                                                    {part}
-                                                    {i < arr.length - 1 && (
-                                                        <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
-                                                            {keyword.highlight}
-                                                        </span>
-                                                    )}
-                                                </span>
-                                            ))}
-                                        </p>
-                                    )}
-                                </div>
+                            <div className={cn(
+                                "w-5 h-5 rounded-full flex items-center justify-center shrink-0",
+                                colors.bg
+                            )}>
+                                <Check className={cn("w-3 h-3", colors.text)} />
                             </div>
-                        </motion.div>
+                            <span>{feature}</span>
+                            {module.secure && idx >= 1 && (
+                                <Lock className="w-3 h-3 text-emerald-400/50 ml-auto" />
+                            )}
+                        </div>
                     ))}
-                </motion.div>
+                </div>
             </div>
+
+            {/* Secure Badge */}
+            {module.secure && (
+                <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                    <Shield className="w-3 h-3 text-emerald-400" />
+                    <span className="text-xs text-emerald-400 font-medium">Sécurisé</span>
+                </div>
+            )}
         </motion.div>
     )
 }

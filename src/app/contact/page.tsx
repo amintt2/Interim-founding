@@ -1,6 +1,6 @@
 import { Header } from "@/components/landing/Header"
 import { Footer } from "@/components/landing/Footer"
-import { DetailedFeatures } from "@/components/features/DetailedFeatures"
+import { DetailedContact } from "@/components/contact/DetailedContact"
 
 // Section Transition Component
 function SectionTransition({
@@ -58,7 +58,7 @@ function SectionTransition({
     )
 }
 
-export default function FeaturesPage() {
+export default function ContactPage() {
     return (
         <div className="flex min-h-screen flex-col bg-[#030303]">
             {/* Subtle gradient background */}
@@ -66,19 +66,19 @@ export default function FeaturesPage() {
                 className="fixed inset-0 pointer-events-none"
                 style={{
                     background: `
-                        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.08), transparent 50%),
-                        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(139, 92, 246, 0.05), transparent 50%),
-                        radial-gradient(ellipse 50% 30% at 20% 80%, rgba(6, 182, 212, 0.05), transparent 50%)
+                        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(59, 130, 246, 0.08), transparent 50%),
+                        radial-gradient(ellipse 60% 40% at 20% 60%, rgba(6, 182, 212, 0.05), transparent 50%),
+                        radial-gradient(ellipse 50% 30% at 80% 80%, rgba(59, 130, 246, 0.05), transparent 50%)
                     `
                 }}
             />
 
             <Header />
             <main className="flex-1 pt-20 relative">
-                <DetailedFeatures />
+                <DetailedContact />
 
                 {/* Transition to Footer */}
-                <SectionTransition id="features-to-footer" from="#030303" to="#0a0e1a" height="100px" />
+                <SectionTransition id="contact-to-footer" from="#030303" to="#0a0e1a" height="100px" />
             </main>
             <Footer />
         </div>
